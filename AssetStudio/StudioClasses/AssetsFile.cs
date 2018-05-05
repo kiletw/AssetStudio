@@ -14,6 +14,7 @@ namespace AssetStudio
         public string filePath;
         public string parentPath;
         public string fileName;
+        public string assetsBundleName;
         public string upperFileName;
         public int fileGen;
         public bool valid;
@@ -149,11 +150,12 @@ namespace AssetStudio
             public string fileName = "";
         }
 
-        public AssetsFile(string fullName, EndianBinaryReader reader)
+        public AssetsFile(string fullName, EndianBinaryReader reader,string bundleFileName)
         {
             this.reader = reader;
             filePath = fullName;
             fileName = Path.GetFileName(fullName);
+            assetsBundleName = bundleFileName;
             upperFileName = fileName.ToUpper();
             try
             {

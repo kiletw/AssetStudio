@@ -488,6 +488,10 @@ namespace AssetStudio
                     {
                         exportpath = savePath + "\\" + asset.TypeString + "\\";
                     }
+                    else if (assetGroupSelectedIndex == 2)
+                    {
+                        exportpath = Path.GetFileNameWithoutExtension(asset.sourceFile.assetsBundleName)+ "\\";
+                    }
                     StatusStripUpdate($"Exporting {asset.TypeString}: {asset.Text}");
                     switch (asset.Type)
                     {
@@ -553,6 +557,12 @@ namespace AssetStudio
                             break;
                         case ClassIDReference.Animator:
                             if (ExportAnimator(asset, exportpath))
+                            {
+                                exportedCount++;
+                            }
+                            break;
+                        case ClassIDReference.AssetBundleManifest:
+                            if (ExportRawString(asset, exportpath))
                             {
                                 exportedCount++;
                             }

@@ -1454,7 +1454,8 @@ namespace AssetStudio
             }
         }
 
-        public AssetStudioForm()
+
+        public AssetStudioForm(string[] args)
         {
             Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
             InitializeComponent();
@@ -1471,6 +1472,39 @@ namespace AssetStudio
             Studio.ProgressBarPerformStep = ProgressBarPerformStep;
             Studio.StatusStripUpdate = StatusStripUpdate;
             Studio.ProgressBarMaximumAdd = ProgressBarMaximumAdd;
+
+            if (args.Length > 0) { LoadFileInit(args); }
+        }
+
+        public void LoadFileInit(string[] args)
+        {
+
+
+            ThreadPool.QueueUserWorkItem(state =>
+            {
+                mainPath = Path.GetDirectoryName(args[0]);
+                MergeSplitAssets(mainPath);
+                var readFile = ProcessingSplitFiles(args.ToList());
+                foreach (var i in readFile)
+                {
+                    importFiles.Add(i);
+                    importFilesHash.Add(Path.GetFileName(i).ToUpper());
+                }
+                SetProgressBarValue(0);
+                SetProgressBarMaximum(importFiles.Count);
+                //use a for loop because list size can change
+                for (int f = 0; f < importFiles.Count; f++)
+                {
+                    LoadFile(importFiles[f]);
+                    ProgressBarPerformStep();
+                }
+                importFilesHash.Clear();
+                assetsfileListHash.Clear();
+                BuildAssetStrucutres();
+
+
+            });
+
         }
 
         private void timerOpenTK_Tick(object sender, EventArgs e)
@@ -1862,6 +1896,63 @@ namespace AssetStudio
             }
             assetListView.VirtualListSize = visibleAssets.Count;
             assetListView.EndUpdate();
+        }
+        private void sceneTreeView_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+            resetForm();
+            mainPath = Path.GetDirectoryName(filePaths[0]);
+
+            if (Directory.Exists(filePaths[0]))
+            {
+                mainPath = filePaths[0];
+                MergeSplitAssets(mainPath);
+
+                var files = Directory.GetFiles(mainPath, "*.*", SearchOption.AllDirectories).ToList();
+                var readFile = ProcessingSplitFiles(files);
+                foreach (var i in readFile)
+                {
+                    importFiles.Add(i);
+                    importFilesHash.Add(Path.GetFileName(i).ToUpper());
+                }
+            }
+            else
+            {
+                var readFile = ProcessingSplitFiles(filePaths.ToList());
+
+                foreach (var i in readFile)
+                {
+                    importFiles.Add(i);
+                    importFilesHash.Add(Path.GetFileName(i).ToUpper());
+                }
+            }
+            
+            ThreadPool.QueueUserWorkItem(state =>
+            {
+                SetProgressBarValue(0);
+                SetProgressBarMaximum(importFiles.Count);
+                //use a for loop because list size can change
+                for (int f = 0; f < importFiles.Count; f++)
+                {
+                    LoadFile(importFiles[f]);
+                    ProgressBarPerformStep();
+                }
+                importFilesHash.Clear();
+                assetsfileListHash.Clear();
+                BuildAssetStrucutres();
+
+            });
+
+        }
+
+
+
+        private void sceneTreeView_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                e.Effect = DragDropEffects.Link;
+            else e.Effect = DragDropEffects.None;
         }
     }
 }

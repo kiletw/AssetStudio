@@ -36,7 +36,7 @@ namespace AssetStudio
             StatusStripUpdate("Loading " + fileName);
             if (!assetsfileListHash.Contains(fileName.ToUpper()))
             {
-                var assetsFile = new AssetsFile(fullName, reader);
+                var assetsFile = new AssetsFile(fullName, reader, fileName);
                 if (assetsFile.valid)
                 {
                     assetsFile.parentPath = parentPath;
@@ -55,7 +55,7 @@ namespace AssetStudio
                         }
                         else if (File.Exists(Path.GetDirectoryName(fullName) + "\\mainData"))
                         {
-                            mainDataFile = new AssetsFile(Path.GetDirectoryName(fullName) + "\\mainData", new EndianBinaryReader(File.OpenRead(Path.GetDirectoryName(fullName) + "\\mainData")));
+                            mainDataFile = new AssetsFile(Path.GetDirectoryName(fullName) + "\\mainData", new EndianBinaryReader(File.OpenRead(Path.GetDirectoryName(fullName) + "\\mainData")), fileName+"_mainData");
                             assetsFile.m_Version = mainDataFile.m_Version;
                             assetsFile.version = mainDataFile.version;
                             assetsFile.buildType = mainDataFile.buildType;
@@ -107,7 +107,7 @@ namespace AssetStudio
                 if (!assetsfileListHash.Contains(file.fileName.ToUpper()))
                 {
                     StatusStripUpdate("Loading " + file.fileName);
-                    var assetsFile = new AssetsFile(Path.GetDirectoryName(fullName) + "\\" + file.fileName, new EndianBinaryReader(file.stream));
+                    var assetsFile = new AssetsFile(Path.GetDirectoryName(fullName) + "\\" + file.fileName, new EndianBinaryReader(file.stream), fileName);
                     if (assetsFile.valid)
                     {
                         assetsFile.parentPath = parentPath ?? fullName;

@@ -306,6 +306,16 @@ namespace AssetStudio
             return true;
         }
 
+        public static bool ExportRawString(AssetPreloadData asset, string exportPath)
+        {
+            var exportFullName = exportPath + asset.Text + ".txt";
+            if (ExportFileExists(exportFullName))
+                return false;
+            var bytes = asset.ViewStruct();
+            File.WriteAllText(exportFullName, bytes);
+            return true;
+        }
+
         private static bool ExportFileExists(string filename)
         {
             if (File.Exists(filename))

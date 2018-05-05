@@ -6,6 +6,7 @@ using System.Text;
 using System.Web.Script.Serialization;
 using Lz4;
 
+
 namespace AssetStudio
 {
     class Shader

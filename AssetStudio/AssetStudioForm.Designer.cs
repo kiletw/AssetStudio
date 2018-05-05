@@ -265,6 +265,7 @@
             this.assetGroupOptions.Items.AddRange(new object[] {
             "Group exported assets by type",
             "Group exported assets by source file",
+            "Group exported assets by filename",
             "Do not group exported assets"});
             this.assetGroupOptions.Name = "assetGroupOptions";
             this.assetGroupOptions.Size = new System.Drawing.Size(192, 25);
@@ -500,6 +501,7 @@
             // sceneTreeView
             // 
             this.sceneTreeView.CheckBoxes = true;
+            this.sceneTreeView.AllowDrop = true;
             this.sceneTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.sceneTreeView.HideSelection = false;
             this.sceneTreeView.Location = new System.Drawing.Point(0, 21);
@@ -507,6 +509,8 @@
             this.sceneTreeView.Size = new System.Drawing.Size(410, 587);
             this.sceneTreeView.TabIndex = 1;
             this.sceneTreeView.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.sceneTreeView_AfterCheck);
+            this.sceneTreeView.DragDrop += new System.Windows.Forms.DragEventHandler(this.sceneTreeView_DragDrop);
+            this.sceneTreeView.DragEnter += new System.Windows.Forms.DragEventHandler(this.sceneTreeView_DragEnter);
             // 
             // treeSearch
             // 
